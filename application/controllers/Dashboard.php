@@ -31,27 +31,20 @@ class Dashboard extends CI_Controller {
 		$logged_in=$this->session->userdata('logged_in');
 			if($logged_in['su']=='1'){
 				
-		$data['result']=$this->user_model->user_list(0);
-				
-				
-		$data['num_users']=$this->user_model->num_users();
-		$data['num_qbank']=$this->qbank_model->num_qbank();
-		$data['num_quiz']=$this->quiz_model->num_quiz();
-		
-		
-			}
-			
+			$data['result']=$this->user_model->user_list(0);
+					
+			$data['num_users']=$this->user_model->num_users();
+			$data['num_qbank']=$this->qbank_model->num_qbank();
+			$data['num_quiz']=$this->quiz_model->num_quiz();
 
-		
-	 
-	 
+		}			
 		$this->load->view('header',$data);
 		$this->load->view('dashboard',$data);
 		$this->load->view('footer',$data);
 	}
 	
 	
-		public function config(){
+	public function config(){
 		
 		$logged_in=$this->session->userdata('logged_in');
 
@@ -83,32 +76,32 @@ class Dashboard extends CI_Controller {
 		$this->load->view('config',$data);
 		$this->load->view('footer',$data);
 
-		}
+	}
 
 
 
-		public function css(){
+	public function css(){
 		
 		$logged_in=$this->session->userdata('logged_in');
-
-			if($logged_in['su']!='1'){
+		
+		if($logged_in['su']!='1'){
 			exit($this->lang->line('permission_denied'));
-			}
-			
-			
+		}
+						
 		if($this->input->post('config_val')){
-		if($this->input->post('force_write')){
-		if(chmod("./css/style.css",0777)){ } 	
-		}
+			if($this->input->post('force_write')){
+				if(chmod("./css/style.css",0777)){ } 	
+			}
 
-		$file="./css/style.css";
-		$content=$this->input->post('config_val');
-		 file_put_contents($file,$content);
-		if($this->input->post('force_write')){
-		if(chmod("./css/style.css",0644)){ } 	
-		}
+			$file="./css/style.css";
+			$content=$this->input->post('config_val');
+			file_put_contents($file,$content);
+			
+			if($this->input->post('force_write')){
+				if(chmod("./css/style.css",0644)){ } 	
+			}
 
-		 redirect('dashboard/css');
+			redirect('dashboard/css');
 		} 
 		 
 		$data['result']=file_get_contents('./css/style.css');
@@ -116,10 +109,5 @@ class Dashboard extends CI_Controller {
 		$this->load->view('header',$data);
 		$this->load->view('css',$data);
 		$this->load->view('footer',$data);
-
-		}		
-		
-		
-		
-	
+	}		
 }

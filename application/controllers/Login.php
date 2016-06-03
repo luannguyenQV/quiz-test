@@ -3,26 +3,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Login extends CI_Controller {
 
-	 function __construct()
-	 {
-	   parent::__construct();
-	   $this->load->database();
-	   $this->load->model("user_model");
-	   $this->lang->load('basic', $this->config->item('language'));
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->database();
+		$this->load->model("user_model");
+		$this->lang->load('basic', $this->config->item('language'));
 		if($this->db->database ==''){
-		redirect('install');	
+			redirect('install');	
 		}
-		 
-		 
-		 
-		
-		
-	 }
+	}
 
 	public function index()
 	{
-		
-		
 		if($this->session->userdata('logged_in')){
 			$logged_in=$this->session->userdata('logged_in');
 			if($logged_in['su']=='1'){
@@ -33,22 +26,13 @@ class Login extends CI_Controller {
 			
 		}
 		
-		
-		
 		$data['title']=$this->lang->line('login');
 		$this->load->view('header',$data);
 		$this->load->view('login',$data);
 		$this->load->view('footer',$data);
 	}
 	
-	
- 
-	
-	
-	
-	
-	
-		public function registration()
+	public function registration()
 	{
 		$data['title']=$this->lang->line('register_new_account');
 		// fetching group list
@@ -68,17 +52,14 @@ class Login extends CI_Controller {
 			
 			// row exist fetch userdata
 			$user=$this->user_model->login($username,$password);
-			
-			
+
 			// validate if user assigned to paid group
 			if($user['price'] > '0'){
 				
 				// user assigned to paid group now validate expiry date.
 				if($user['subscription_expired'] <= time()){
 					// eubscription expired, redirect to payment page
-					
 					redirect('payment_gateway/subscription_expired/'.$user['uid']);
-					
 				}
 				
 			}
@@ -92,46 +73,30 @@ class Login extends CI_Controller {
 				redirect('quiz');	
 			}
 		}else{
-			 
-			// invalid login
 			$this->session->set_flashdata('message', $this->lang->line('invalid_login'));
 			redirect('login');
 		}
-		
-		
-		
 	}
 	
-	
-	
-	
-		
 	function verify($vcode){
-			 
-		 if($this->user_model->verify_code($vcode)){
-			 $data['title']=$this->lang->line('email_verified');
-		   $this->load->view('header',$data);
+		if($this->user_model->verify_code($vcode)){
+			$data['title']=$this->lang->line('email_verified');
+		   	$this->load->view('header',$data);
 			$this->load->view('verify_code',$data);
-		  $this->load->view('footer',$data);
-
-			}else{
-			 $data['title']=$this->lang->line('invalid_link');
-		   $this->load->view('header',$data);
+		  	$this->load->view('footer',$data);	
+		} else {
+			$data['title']=$this->lang->line('invalid_link');
+		   	$this->load->view('header',$data);
 			$this->load->view('verify_code',$data);
-		  $this->load->view('footer',$data);
-
-			}
+		  	$this->load->view('footer',$data);
+		}
 	}
-	
-	
-	
 	
 	function forgot(){
 			if($this->input->post('email')){
 			$user_email=$this->input->post('email');
-			 if($this->user_model->reset_password($user_email)){
+			if($this->user_model->reset_password($user_email)){
 				$this->session->set_flashdata('message', "<div class='alert alert-success'>".$this->lang->line('password_updated')." </div>");
-						
 			}else{
 				$this->session->set_flashdata('message', "<div class='alert alert-danger'>".$this->lang->line('email_doesnot_exist')." </div>");
 						
